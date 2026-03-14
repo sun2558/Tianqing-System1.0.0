@@ -97,7 +97,6 @@ class QualityReportGenerator:
                 "min": float(cleaned_data.min()) if len(cleaned_data) > 0 else None,
                 "max": float(cleaned_data.max()) if len(cleaned_data) > 0 else None,
                 "25%": float(cleaned_data.quantile(0.25)) if len(cleaned_data) > 0 else None,
-                "50%": float(cleaned_data.quantile(0.5)) if len(cleaned_data) > 0 else None,
                 "75%": float(cleaned_data.quantile(0.75)) if len(cleaned_data) > 0 else None,
             }
         
@@ -493,11 +492,11 @@ if __name__ == "__main__":
     print(f"数据形状: {df.shape}")
     
     # 2. 简单清洗（示例）
-    df_cleaned = df.copy()
-    if 'temperature' in df_cleaned.columns:
-        # 用均值填充温度缺失值
-        mean_temp = df_cleaned['temperature'].mean()
-        df_cleaned['temperature'].fillna(mean_temp, inplace=True)
+df_cleaned = df.copy()
+if 'temperature' in df_cleaned.columns:
+    # 用均值填充温度缺失值
+    mean_temp = df_cleaned['temperature'].mean()
+    df_cleaned['temperature'] = df_cleaned['temperature'].fillna(mean_temp)
     
     # 3. 创建报告生成器
     generator = QualityReportGenerator(raw_df=df, cleaned_df=df_cleaned)
@@ -506,6 +505,6 @@ if __name__ == "__main__":
     generator.generate_full_report(column='temperature')
     
     # 5. 保存报告
-    generator.save_report(format='txt', path='../../reports/quality_report.txt')
+    generator.save_report(format='txt', path='src/reports/quality_report.txt')
     
     print("\n✅ 真实数据处理完成！")
